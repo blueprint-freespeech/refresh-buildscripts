@@ -8,46 +8,51 @@ test -e ${BUILD_OUTPUT}/Ricochet.app && rm -r ${BUILD_OUTPUT}/Ricochet.app
 test -e ${BUILD_OUTPUT}/ricochet-unstripped && rm ${BUILD_OUTPUT}/ricochet-unstripped
 test -e ${BUILD_OUTPUT}/Ricochet*.dmg && rm ${BUILD_OUTPUT}/Ricochet*.dmg
 
-cd $ROOT_SRC
+pushd $ROOT_SRC
 
-# Ricochet
-test -e ricochet || git clone https://github.com/ricochet-im/ricochet.git
-cd ricochet
-git clean -dfx .
+  # Ricochet
+  test -e ricochet-refresh || git clone https://github.com/blueprint-freespeech/ricochet-refresh.git
 
-RICOCHET_VERSION=`git describe --tags HEAD`
+  pushd ricochet-refresh
+    git clean -dfx .
 
-test -e build && rm -r build
-mkdir build
-cd build
+    RICOCHET_VERSION=`git describe --tags HEAD`
 
-export PKG_CONFIG_PATH=${ROOT_LIB}/protobuf/lib/pkgconfig:${PKG_CONFIG_PATH}
-export PATH=${ROOT_LIB}/qt5/bin/:${ROOT_LIB}/protobuf/bin/:${PATH}
-qmake CONFIG+=release OPENSSLDIR="${ROOT_LIB}/openssl/" ..
-make ${MAKEOPTS}
+    test -e build && rm -r build
+    mkdir build
 
-cp ricochet.app/Contents/MacOS/ricochet ${BUILD_OUTPUT}/ricochet-unstripped
-cp ${BUILD_OUTPUT}/tor ricochet.app/Contents/MacOS
-strip ricochet.app/Contents/MacOS/*
+    pushd build
 
-mv ricochet.app Ricochet.app
-${ROOT_LIB}/qt5/bin/macdeployqt Ricochet.app -qmldir=../src/ui/qml
+      export PKG_CONFIG_PATH=${ROOT_LIB}/protobuf/lib/pkgconfig:${PKG_CONFIG_PATH}
+      export PATH=${ROOT_LIB}/protobuf/bin/:${PATH}
+      qmake CONFIG+=release OPENSSLDIR="${ROOT_LIB}/openssl/" ..
+      make ${MAKEOPTS}
 
-cp -R Ricochet.app ${BUILD_OUTPUT}/
-cd ${BUILD_OUTPUT}
+      cp ricochet.app/Contents/MacOS/ricochet ${BUILD_OUTPUT}/ricochet-unstripped
+      cp ${BUILD_OUTPUT}/tor ricochet.app/Contents/MacOS
+      strip ricochet.app/Contents/MacOS/*
 
-if [ ! -z "$CODESIGN_ID" ]; then
-    codesign --verbose --sign "$CODESIGN_ID" --deep Ricochet.app
-    # Sign twice to work around a bug(?) that results in the asan library being invalid
-    codesign -f --verbose --sign "$CODESIGN_ID" --deep Ricochet.app
-    codesign -vvvv -d Ricochet.app
-fi
+      mv ricochet.app Ricochet.app
+      macdeployqt Ricochet.app -qmldir=../src/ui/qml
+      cp -R Ricochet.app ${BUILD_OUTPUT}/
 
-hdiutil create Ricochet.dmg -srcfolder Ricochet.app -format UDZO -volname Ricochet
-mv Ricochet.dmg ${BUILD_OUTPUT}/Ricochet-${RICOCHET_VERSION}.dmg
+      pushd ${BUILD_OUTPUT}
 
-cd ..
-echo "---------------------"
-ls -la ${BUILD_OUTPUT}/
-spctl -vvvv --assess --type execute ${BUILD_OUTPUT}/Ricochet.app
-echo "build: done"
+        if [ ! -z "$CODESIGN_ID" ]; then
+          codesign --verbose --sign "$CODESIGN_ID" --deep Ricochet.app
+          # Sign twice to work around a bug(?) that results in the asan library being invalid
+          codesign -f --verbose --sign "$CODESIGN_ID" --deep Ricochet.app
+          codesign -vvvv -d Ricochet.app
+        fi
+
+        hdiutil create Ricochet.dmg -srcfolder Ricochet.app -format UDZO -volname Ricochet
+        mv Ricochet.dmg ${BUILD_OUTPUT}/Ricochet-${RICOCHET_VERSION}.dmg
+      popd
+    popd
+
+    echo "---------------------"
+    ls -la ${BUILD_OUTPUT}/
+    spctl -vvvv --assess --type execute ${BUILD_OUTPUT}/Ricochet.app
+    echo "build: done"
+  popd
+popd

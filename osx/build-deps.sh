@@ -14,23 +14,24 @@ git submodule update --init
 cd $ROOT_SRC
 
 # Qt
-cd qt5
-git submodule update --init qtbase qtdeclarative qtgraphicaleffects qtimageformats qtquickcontrols qtsvg qtmacextras qttools qtmultimedia
-git submodule foreach git clean -dfx .
-git submodule foreach git reset --hard
-./configure -opensource -confirm-license -release \
-    -no-qml-debug -no-dbus -no-openssl -no-cups \
-    -qt-zlib -qt-libpng -qt-libjpeg -qt-freetype -qt-pcre \
-    -nomake tests -nomake examples \
-    -prefix "${ROOT_LIB}/qt5/"
-make ${MAKEOPTS}
-make install
-cd ..
+pushd qt5
+  git submodule update --init qtbase qtdeclarative qtgraphicaleffects qtimageformats qtquickcontrols qtsvg qtmacextras qttools qtmultimedia
+  git submodule foreach git clean -dfx .
+  git submodule foreach git reset --hard
+  ./configure -opensource -confirm-license -release \
+      -no-qml-debug -no-dbus -no-openssl -no-cups \
+      -qt-zlib -qt-libpng -qt-libjpeg -qt-freetype -qt-pcre \
+      -nomake tests -nomake examples \
+      -prefix "${ROOT_LIB}/qt5/"
+  make ${MAKEOPTS}
+  make install
+popd
 
 # Qt Declarative 2D Renderer
 cd qtdeclarative-render2d
 git clean -dfx .
 git reset --hard
+# qmake
 "${ROOT_LIB}/qt5/bin/qmake"
 make ${MAKEOPTS}
 make install
@@ -49,9 +50,9 @@ cd ..
 cd libevent
 git clean -dfx .
 git reset --hard
-git apply "${ROOT_SRC}/../osx/libevent-0001-Forcefully-disable-clock_gettime-on-macOS-due-to-a-S.patch"
+# git apply "${ROOT_SRC}/../osx/libevent-0001-Forcefully-disable-clock_gettime-on-macOS-due-to-a-S.patch"
 ./autogen.sh
-CFLAGS="-mmacosx-version-min=10.7" ./configure --prefix="${ROOT_LIB}/libevent" --disable-openssl
+CFLAGS="-mmacosx-version-min=10.11" ./configure --prefix="${ROOT_LIB}/libevent" --disable-openssl
 make ${MAKEOPTS}
 make install
 cd ..
@@ -60,9 +61,9 @@ cd ..
 cd tor
 git clean -dfx .
 git reset --hard
-git apply "${ROOT_SRC}/../osx/tor-0001-Forcefully-disable-getentropy-and-clock_gettime-on-m.patch"
+# git apply "${ROOT_SRC}/../osx/tor-0001-Forcefully-disable-getentropy-and-clock_gettime-on-m.patch"
 ./autogen.sh
-CFLAGS="-fPIC -mmacosx-version-min=10.7" ./configure --prefix="${ROOT_LIB}/tor" --with-openssl-dir="${ROOT_LIB}/openssl/" --with-libevent-dir="${ROOT_LIB}/libevent/" --enable-static-openssl --enable-static-libevent --disable-asciidoc
+CFLAGS="-fPIC -mmacosx-version-min=10.7" ./configure --prefix="${ROOT_LIB}/tor" --with-openssl-dir="${ROOT_LIB}/openssl/" --with-libevent-dir="${ROOT_LIB}/libevent/" --enable-static-openssl --enable-static-libevent --disable-asciidoc --disable-libscrypt
 make ${MAKEOPTS}
 make install
 cp ${ROOT_LIB}/tor/bin/tor ${BUILD_OUTPUT}/
