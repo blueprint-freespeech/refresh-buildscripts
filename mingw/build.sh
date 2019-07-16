@@ -1,3 +1,5 @@
+#!/bin/bash
+
 set -e
 
 # Ensure PATH is set correctly

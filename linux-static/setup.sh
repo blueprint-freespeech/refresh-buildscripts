@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Run inside a new, Debian-based container to set up a build environment the first time
 
 set -e

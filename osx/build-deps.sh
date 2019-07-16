@@ -1,3 +1,5 @@
+#!/bin/bash
+
 set -e
 
 ROOT_SRC=`pwd`/src
