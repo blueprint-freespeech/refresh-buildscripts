@@ -5,15 +5,15 @@ set -e
 ROOT_SRC=$(pwd)/src
 ROOT_LIB=$(pwd)/lib
 BUILD_OUTPUT=$(pwd)/output
-test -e ${ROOT_SRC}
-test -e ${ROOT_LIB} && rm -r ${ROOT_LIB}
-mkdir ${ROOT_LIB}
-test -e ${BUILD_OUTPUT} && rm -r ${BUILD_OUTPUT}
-mkdir ${BUILD_OUTPUT}
+test -e "${ROOT_SRC}"
+test -e "${ROOT_LIB}" && rm -r "${ROOT_LIB}"
+mkdir "${ROOT_LIB}"
+test -e "${BUILD_OUTPUT}" && rm -r "${BUILD_OUTPUT}"
+mkdir "${BUILD_OUTPUT}"
 
 # Build dependencies
 git submodule update --init
-cd $ROOT_SRC
+cd "$ROOT_SRC"
 
 # Qt
 pushd qt5
@@ -25,7 +25,7 @@ pushd qt5
       -qt-zlib -qt-libpng -qt-libjpeg -qt-freetype -qt-pcre \
       -nomake tests -nomake examples \
       -prefix "${ROOT_LIB}/qt5/"
-  make ${MAKEOPTS}
+  make "${MAKEOPTS}"
   make install
 popd
 
@@ -35,7 +35,7 @@ git clean -dfx .
 git reset --hard
 # qmake
 "${ROOT_LIB}/qt5/bin/qmake"
-make ${MAKEOPTS}
+make "${MAKEOPTS}"
 make install
 cd ..
 
@@ -55,7 +55,7 @@ git reset --hard
 # git apply "${ROOT_SRC}/../osx/libevent-0001-Forcefully-disable-clock_gettime-on-macOS-due-to-a-S.patch"
 ./autogen.sh
 CFLAGS="-mmacosx-version-min=10.11" ./configure --prefix="${ROOT_LIB}/libevent" --disable-openssl
-make ${MAKEOPTS}
+make "${MAKEOPTS}"
 make install
 cd ..
 
@@ -66,9 +66,9 @@ git reset --hard
 # git apply "${ROOT_SRC}/../osx/tor-0001-Forcefully-disable-getentropy-and-clock_gettime-on-m.patch"
 ./autogen.sh
 CFLAGS="-fPIC -mmacosx-version-min=10.7" ./configure --prefix="${ROOT_LIB}/tor" --with-openssl-dir="${ROOT_LIB}/openssl/" --with-libevent-dir="${ROOT_LIB}/libevent/" --enable-static-openssl --enable-static-libevent --disable-asciidoc --disable-libscrypt
-make ${MAKEOPTS}
+make "${MAKEOPTS}"
 make install
-cp ${ROOT_LIB}/tor/bin/tor ${BUILD_OUTPUT}/
+cp "${ROOT_LIB}/tor/bin/tor" "${BUILD_OUTPUT}/"
 cd ..
 
 # Protobuf
@@ -86,7 +86,7 @@ fi
 
 ./autogen.sh
 CXX=clang++ CXXFLAGS="-mmacosx-version-min=10.7 -stdlib=libc++" ./configure --prefix="${ROOT_LIB}/protobuf/" --disable-shared --without-zlib --with-pic
-make ${MAKEOPTS}
+make "${MAKEOPTS}"
 make install
 cd ..
 

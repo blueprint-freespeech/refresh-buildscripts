@@ -6,11 +6,11 @@ ROOT_SRC=$(pwd)/src
 ROOT_LIB=$(pwd)/lib
 BUILD_OUTPUT=$(pwd)/output
 
-test -e ${BUILD_OUTPUT}/Ricochet.app && rm -r ${BUILD_OUTPUT}/Ricochet.app
-test -e ${BUILD_OUTPUT}/ricochet-unstripped && rm ${BUILD_OUTPUT}/ricochet-unstripped
-test -e ${BUILD_OUTPUT}/Ricochet*.dmg && rm ${BUILD_OUTPUT}/Ricochet*.dmg
+test -e "${BUILD_OUTPUT}/Ricochet.app" && rm -r "${BUILD_OUTPUT}/Ricochet.app"
+test -e "${BUILD_OUTPUT}/ricochet-unstripped" && rm "${BUILD_OUTPUT}/ricochet-unstripped"
+test -e "${BUILD_OUTPUT}/Ricochet*.dmg" && rm "${BUILD_OUTPUT}/Ricochet*.dmg"
 
-pushd $ROOT_SRC
+pushd "$ROOT_SRC"
 
   # Ricochet
   test -e ricochet-refresh || git clone https://github.com/blueprint-freespeech/ricochet-refresh.git
@@ -28,17 +28,17 @@ pushd $ROOT_SRC
       export PKG_CONFIG_PATH=${ROOT_LIB}/protobuf/lib/pkgconfig:${PKG_CONFIG_PATH}
       export PATH=${ROOT_LIB}/protobuf/bin/:${PATH}
       qmake CONFIG+=release OPENSSLDIR="${ROOT_LIB}/openssl/" ..
-      make ${MAKEOPTS}
+      make "${MAKEOPTS}"
 
-      cp ricochet.app/Contents/MacOS/ricochet ${BUILD_OUTPUT}/ricochet-unstripped
-      cp ${BUILD_OUTPUT}/tor ricochet.app/Contents/MacOS
+      cp ricochet.app/Contents/MacOS/ricochet "${BUILD_OUTPUT}/ricochet-unstripped"
+      cp "${BUILD_OUTPUT}/tor" ricochet.app/Contents/MacOS
       strip ricochet.app/Contents/MacOS/*
 
       mv ricochet.app Ricochet.app
       macdeployqt Ricochet.app -qmldir=../src/ui/qml
-      cp -R Ricochet.app ${BUILD_OUTPUT}/
+      cp -R Ricochet.app "${BUILD_OUTPUT}/"
 
-      pushd ${BUILD_OUTPUT}
+      pushd "${BUILD_OUTPUT}"
 
         if [ ! -z "$CODESIGN_ID" ]; then
           codesign --verbose --sign "$CODESIGN_ID" --deep Ricochet.app
@@ -48,13 +48,13 @@ pushd $ROOT_SRC
         fi
 
         hdiutil create Ricochet.dmg -srcfolder Ricochet.app -format UDZO -volname Ricochet
-        mv Ricochet.dmg ${BUILD_OUTPUT}/Ricochet-${RICOCHET_VERSION}.dmg
+        mv Ricochet.dmg "${BUILD_OUTPUT}/Ricochet-${RICOCHET_VERSION}.dmg"
       popd
     popd
 
     echo "---------------------"
-    ls -la ${BUILD_OUTPUT}/
-    spctl -vvvv --assess --type execute ${BUILD_OUTPUT}/Ricochet.app
+    ls -la "${BUILD_OUTPUT}/"
+    spctl -vvvv --assess --type execute "${BUILD_OUTPUT}/Ricochet.app"
     echo "build: done"
   popd
 popd
