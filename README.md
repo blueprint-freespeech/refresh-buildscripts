@@ -23,3 +23,4 @@ Building
 
 See individual directories for build instructions. Generally, set `MAKEOPTS=-j6`, run `./platform/build-deps.sh`, checkout the commit you want to `src/ricochet`, and run `./platform/build.sh`
 
+If a submodule has changed versions since the last time you ran a build, you will need to run `git submodule foreach --recursive git clean -x -f -d` to get submodules to a consistent state.
