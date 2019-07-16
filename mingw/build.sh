@@ -5,9 +5,9 @@ set -e
 # Ensure PATH is set correctly
 which iscc >/dev/null
 
-ROOT_SRC=`pwd`/src
-ROOT_LIB=`pwd`/lib
-BUILD_OUTPUT=`pwd`/output
+ROOT_SRC=$(pwd)/src
+ROOT_LIB=$(pwd)/lib
+BUILD_OUTPUT=$(pwd)/output
 
 cd $ROOT_SRC
 
@@ -32,7 +32,7 @@ cp ${BUILD_OUTPUT}/tor.exe .
 ${ROOT_LIB}/qt5/bin/windeployqt --qmldir ../../src/ui/qml --dir Qt ricochet.exe
 test -e Qt/qmltooling && rm -r Qt/qmltooling
 # libssp is needed for gcc's stack protector, and windeployqt won't grab it
-cp `which libssp-0.dll` Qt/
+cp $(which libssp-0.dll) Qt/
 cp ../../packaging/installer/* .
 iscc installer.iss
 cp Output/Ricochet.exe ${BUILD_OUTPUT}/setup.exe

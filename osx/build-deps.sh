@@ -2,9 +2,9 @@
 
 set -e
 
-ROOT_SRC=`pwd`/src
-ROOT_LIB=`pwd`/lib
-BUILD_OUTPUT=`pwd`/output
+ROOT_SRC=$(pwd)/src
+ROOT_LIB=$(pwd)/lib
+BUILD_OUTPUT=$(pwd)/output
 test -e ${ROOT_SRC}
 test -e ${ROOT_LIB} && rm -r ${ROOT_LIB}
 mkdir ${ROOT_LIB}

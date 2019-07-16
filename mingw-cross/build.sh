@@ -2,9 +2,9 @@
 
 set -e
 
-ROOT_SRC=`pwd`/src
-ROOT_LIB=`pwd`/lib
-BUILD_OUTPUT=`pwd`/output
+ROOT_SRC=$(pwd)/src
+ROOT_LIB=$(pwd)/lib
+BUILD_OUTPUT=$(pwd)/output
 
 cd $ROOT_SRC
 
@@ -13,7 +13,7 @@ test -e ricochet || git clone https://github.com/ricochet-im/ricochet.git
 cd ricochet
 git clean -dfx .
 
-RICOCHET_VERSION=`git describe --tags HEAD`
+RICOCHET_VERSION=$(git describe --tags HEAD)
 
 test -e build && rm -r build
 mkdir build

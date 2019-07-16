@@ -2,9 +2,9 @@
 
 set -e
 
-ROOT_SRC=`pwd`/src
-ROOT_LIB=`pwd`/lib
-BUILD_OUTPUT=`pwd`/output
+ROOT_SRC=$(pwd)/src
+ROOT_LIB=$(pwd)/lib
+BUILD_OUTPUT=$(pwd)/output
 test -e ${ROOT_SRC}
 test -e ${ROOT_LIB} && rm -r ${ROOT_LIB}
 mkdir ${ROOT_LIB}
@@ -58,7 +58,7 @@ cd tor
 git clean -dfx .
 git reset --hard
 ./autogen.sh
-CFLAGS=-fPIC ./configure --prefix="${ROOT_LIB}/tor" --with-openssl-dir="${ROOT_LIB}/openssl/" --with-libevent-dir="${ROOT_LIB}/libevent/" --with-zlib-dir=`pkg-config --variable=libdir zlib` --enable-static-tor --disable-asciidoc
+CFLAGS=-fPIC ./configure --prefix="${ROOT_LIB}/tor" --with-openssl-dir="${ROOT_LIB}/openssl/" --with-libevent-dir="${ROOT_LIB}/libevent/" --with-zlib-dir=$(pkg-config --variable=libdir zlib) --enable-static-tor --disable-asciidoc
 make ${MAKEOPTS}
 make install
 cp ${ROOT_LIB}/tor/bin/tor ${BUILD_OUTPUT}/

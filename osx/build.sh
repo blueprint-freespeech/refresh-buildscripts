@@ -2,9 +2,9 @@
 
 set -e
 
-ROOT_SRC=`pwd`/src
-ROOT_LIB=`pwd`/lib
-BUILD_OUTPUT=`pwd`/output
+ROOT_SRC=$(pwd)/src
+ROOT_LIB=$(pwd)/lib
+BUILD_OUTPUT=$(pwd)/output
 
 test -e ${BUILD_OUTPUT}/Ricochet.app && rm -r ${BUILD_OUTPUT}/Ricochet.app
 test -e ${BUILD_OUTPUT}/ricochet-unstripped && rm ${BUILD_OUTPUT}/ricochet-unstripped
@@ -18,7 +18,7 @@ pushd $ROOT_SRC
   pushd ricochet-refresh
     git clean -dfx .
 
-    RICOCHET_VERSION=`git describe --tags HEAD`
+    RICOCHET_VERSION=$(git describe --tags HEAD)
 
     test -e build && rm -r build
     mkdir build

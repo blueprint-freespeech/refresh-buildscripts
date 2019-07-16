@@ -2,9 +2,9 @@
 
 set -e
 
-ROOT_SRC=`pwd`/src
-ROOT_LIB=`pwd`/lib
-BUILD_OUTPUT=`pwd`/output
+ROOT_SRC=$(pwd)/src
+ROOT_LIB=$(pwd)/lib
+BUILD_OUTPUT=$(pwd)/output
 test -e ${ROOT_SRC}
 test -e ${ROOT_LIB} && rm -r ${ROOT_LIB}
 mkdir ${ROOT_LIB}
@@ -25,7 +25,7 @@ git apply --ignore-whitespace ${ROOT_SRC}/../mingw/0001-Workarounds-for-a-dynami
 git apply --ignore-whitespace ${ROOT_SRC}/../mingw/0001-fix-visibility-of-bundled-zlib-symbols-with-mingw.patch
 cd ..
 # Prefix needs to use the Windows style, not the mingw converted path
-QT_PREFIX="`cygpath -m ${ROOT_LIB}/qt5/`"
+QT_PREFIX="$(cygpath -m ${ROOT_LIB}/qt5/)"
 ./configure -prefix ${QT_PREFIX} -release -opensource -confirm-license -no-dbus -no-qml-debug -no-glib -no-openssl -no-fontconfig -no-icu -qt-pcre -qt-zlib -qt-libpng -qt-libjpeg -nomake tools -nomake examples -platform win32-g++ -opengl dynamic
 make ${MAKEOPTS}
 make install
@@ -43,7 +43,7 @@ cd ..
 # Openssl
 cd openssl
 # CRLF can break a perl script used by openssl's build; reset core.autocrlf on this repo
-if [ "`git config core.autocrlf`" != "false" ]; then
+if [ "$(git config core.autocrlf)" != "false" ]; then
 	echo "Fixing core.autocrlf on OpenSSL repository"
 	git config core.autocrlf false
 	git rm --cached -r .
@@ -70,7 +70,7 @@ cd tor
 git clean -dfx .
 git reset --hard
 ./autogen.sh
-LIBS+=-lcrypt32 ./configure --prefix="${ROOT_LIB}/tor" --with-openssl-dir="${ROOT_LIB}/openssl/" --with-libevent-dir="${ROOT_LIB}/libevent/" --with-zlib-dir=`pkg-config --variable=libdir zlib` --enable-static-tor --disable-asciidoc
+LIBS+=-lcrypt32 ./configure --prefix="${ROOT_LIB}/tor" --with-openssl-dir="${ROOT_LIB}/openssl/" --with-libevent-dir="${ROOT_LIB}/libevent/" --with-zlib-dir=$(pkg-config --variable=libdir zlib) --enable-static-tor --disable-asciidoc
 make ${MAKEOPTS}
 make install
 cp ${ROOT_LIB}/tor/bin/tor.exe ${BUILD_OUTPUT}/
