@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 ROOT_SRC=$(pwd)/src
 ROOT_LIB=$(pwd)/lib
@@ -13,10 +13,10 @@ test -e "${BUILD_OUTPUT}/Ricochet*.dmg" && rm "${BUILD_OUTPUT}/Ricochet*.dmg"
 pushd "$ROOT_SRC"
 
   # Ricochet
-  test -e ricochet-refresh || git clone https://github.com/blueprint-freespeech/ricochet-refresh.git
+  # test -e ricochet-refresh || git clone https://github.com/blueprint-freespeech/ricochet-refresh.git
 
   pushd ricochet-refresh
-    git clean -dfx .
+    # git clean -dfx .
 
     RICOCHET_VERSION=$(git describe --tags HEAD)
 
@@ -28,10 +28,10 @@ pushd "$ROOT_SRC"
       export PKG_CONFIG_PATH=${ROOT_LIB}/protobuf/lib/pkgconfig:${PKG_CONFIG_PATH}
       export PATH=${ROOT_LIB}/protobuf/bin/:${PATH}
       qmake CONFIG+=release OPENSSLDIR="${ROOT_LIB}/openssl/" ..
-      make "${MAKEOPTS}"
+      make ${MAKEOPTS}
 
       cp ricochet-refresh.app/Contents/MacOS/ricochet-refresh "${BUILD_OUTPUT}/ricochet-refresh-unstripped"
-      cp "${BUILD_OUTPUT}/tor ricochet-refresh.app/Contents/MacOS"
+      cp "${BUILD_OUTPUT}/tor" "ricochet-refresh.app/Contents/MacOS"
       strip ricochet-refresh.app/Contents/MacOS/*
 
       mv ricochet-refresh.app Ricochet\ Refresh.app
