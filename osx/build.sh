@@ -6,8 +6,8 @@ ROOT_SRC=$(pwd)/src
 ROOT_LIB=$(pwd)/lib
 BUILD_OUTPUT=$(pwd)/output
 
-test -e "${BUILD_OUTPUT}/Ricochet.app" && rm -r "${BUILD_OUTPUT}/Ricochet.app"
-test -e "${BUILD_OUTPUT}/ricochet-unstripped" && rm "${BUILD_OUTPUT}/ricochet-unstripped"
+test -e "${BUILD_OUTPUT}/Ricochet\ Refresh.app" && rm -r "${BUILD_OUTPUT}/Ricochet\ Refresh.app"
+test -e "${BUILD_OUTPUT}/ricochet-refresh-unstripped" && rm "${BUILD_OUTPUT}/ricochet-refresh-unstripped"
 test -e "${BUILD_OUTPUT}/Ricochet*.dmg" && rm "${BUILD_OUTPUT}/Ricochet*.dmg"
 
 pushd "$ROOT_SRC"
@@ -30,31 +30,31 @@ pushd "$ROOT_SRC"
       qmake CONFIG+=release OPENSSLDIR="${ROOT_LIB}/openssl/" ..
       make "${MAKEOPTS}"
 
-      cp ricochet.app/Contents/MacOS/ricochet "${BUILD_OUTPUT}/ricochet-unstripped"
-      cp "${BUILD_OUTPUT}/tor" ricochet.app/Contents/MacOS
-      strip ricochet.app/Contents/MacOS/*
+      cp ricochet-refresh.app/Contents/MacOS/ricochet-refresh "${BUILD_OUTPUT}/ricochet-refresh-unstripped"
+      cp "${BUILD_OUTPUT}/tor ricochet-refresh.app/Contents/MacOS"
+      strip ricochet-refresh.app/Contents/MacOS/*
 
-      mv ricochet.app Ricochet.app
-      macdeployqt Ricochet.app -qmldir=../src/ui/qml
-      cp -R Ricochet.app "${BUILD_OUTPUT}/"
+      mv ricochet-refresh.app Ricochet\ Refresh.app
+      macdeployqt Ricochet\ Refresh.app -qmldir=../src/ui/qml
+      cp -R Ricochet\ Refresh.app "${BUILD_OUTPUT}/"
 
       pushd "${BUILD_OUTPUT}"
 
         if [ ! -z "$CODESIGN_ID" ]; then
-          codesign --verbose --sign "$CODESIGN_ID" --deep Ricochet.app
+          codesign --verbose --sign "$CODESIGN_ID" --deep Ricochet\ Refresh.app
           # Sign twice to work around a bug(?) that results in the asan library being invalid
-          codesign -f --verbose --sign "$CODESIGN_ID" --deep Ricochet.app
+          codesign -f --verbose --sign "$CODESIGN_ID" --deep Ricochet\ Refresh.app
           codesign -vvvv -d Ricochet.app
         fi
 
-        hdiutil create Ricochet.dmg -srcfolder Ricochet.app -format UDZO -volname Ricochet
-        mv Ricochet.dmg "${BUILD_OUTPUT}/Ricochet-${RICOCHET_VERSION}.dmg"
+        hdiutil create Ricochet\ Refresh.dmg -srcfolder Ricochet\ Refresh.app -format UDZO -volname Ricochet\ Refresh
+        mv Ricochet\ Refresh.dmg "${BUILD_OUTPUT}/Ricochet-Refresh-${RICOCHET_VERSION}.dmg"
       popd
     popd
 
     echo "---------------------"
     ls -la "${BUILD_OUTPUT}/"
-    spctl -vvvv --assess --type execute "${BUILD_OUTPUT}/Ricochet.app"
+    spctl -vvvv --assess --type execute "${BUILD_OUTPUT}/Ricochet\ Refresh.app"
     echo "build: done"
   popd
 popd
