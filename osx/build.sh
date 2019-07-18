@@ -6,9 +6,9 @@ ROOT_SRC=$(pwd)/src
 ROOT_LIB=$(pwd)/lib
 BUILD_OUTPUT=$(pwd)/output
 
-test -e "${BUILD_OUTPUT}/Ricochet Refresh.app" && rm -r "${BUILD_OUTPUT}/Ricochet Refresh.app"
-test -e "${BUILD_OUTPUT}/ricochet-refresh-unstripped" && rm "${BUILD_OUTPUT}/ricochet-refresh-unstripped"
-test -e "${BUILD_OUTPUT}/Ricochet*.dmg" && rm "${BUILD_OUTPUT}/Ricochet*.dmg"
+test -e "${BUILD_OUTPUT}/Ricochet Refresh.app" && rm -rf "${BUILD_OUTPUT}/Ricochet Refresh.app"
+test -e "${BUILD_OUTPUT}/ricochet-refresh-unstripped" && rm -rf "${BUILD_OUTPUT}/ricochet-refresh-unstripped"
+test -e "${BUILD_OUTPUT}/Ricochet*.dmg" && rm -rf "${BUILD_OUTPUT}/Ricochet*.dmg"
 
 pushd "$ROOT_SRC"
 
@@ -54,7 +54,7 @@ pushd "$ROOT_SRC"
 
     echo "---------------------"
     ls -la "${BUILD_OUTPUT}/"
-    spctl -vvvv --assess --type execute "${BUILD_OUTPUT}/Ricochet\ Refresh.app"
+    spctl -vvvv --assess --type execute "${BUILD_OUTPUT}/Ricochet Refresh.app"
     echo "build: done"
   popd
 popd
